@@ -1,0 +1,10 @@
+# Python junk
+__pycache__/
+*.pyc
+
+# Mac junk
+.DS_Store
+
+# Never commit secrets or env files
+.env
+*.pem
