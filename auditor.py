@@ -7,9 +7,6 @@ def read_note(filepath):
         text = file.read()
     return text
 
-# --- Test it ---
-note = read_note("notes/note1_copd.txt")
-print(note)
 
 # Words/phrases that signal safety-netting advice is present
 SAFETY_KEYWORDS = [
@@ -35,12 +32,6 @@ def has_safety_netting(text):
             return True
     return False
 
-# --- Test on all five notes ---
-import os
-for filename in sorted(os.listdir("notes")):
-    note_text = read_note("notes/" + filename)
-    found = has_safety_netting(note_text)
-    print(filename, "->", found)
 
 # Signs of SPECIFIC (good) safety-netting - specific symptoms and escalation routes
 SPECIFIC_KEYWORDS = [
@@ -77,18 +68,12 @@ def grade_safety_netting(text):
     else:
         return "VAGUE"
 
-# --- Grade all five notes ---
-print("\n--- GRADES ---")
-for filename in sorted(os.listdir("notes")):
-    note_text = read_note("notes/" + filename)
-    grade = grade_safety_netting(note_text)
-    print(filename, "->", grade)
 
 # --- AI LAYER ---
 import boto3
 import json
 
-client = boto3.client("bedrock-runtime", region_name="eu-west-2")  # picks up ANTHROPIC_API_KEY automatically
+client = boto3.client("bedrock-runtime", region_name="eu-west-2")
 
 AUDIT_PROMPT = """You are a clinical documentation auditor reviewing discharge notes.
 
@@ -122,10 +107,17 @@ def ai_grade(text):
     result = json.loads(response["body"].read())
     return result["content"][0]["text"]
 
-# --- AI-grade all five notes ---
-print("\n--- AI GRADES ---")
-for filename in sorted(os.listdir("notes")):
-    note_text = read_note("notes/" + filename)
-    print("\n" + filename)
-    print(ai_grade(note_text))
+if __name__ == "__main__":
+    import os
+
+    print("\n--- RULES GRADES ---")
+    for filename in sorted(os.listdir("notes")):
+        note_text = read_note("notes/" + filename)
+        print(filename, "->", grade_safety_netting(note_text))
+
+    print("\n--- AI GRADES ---")
+    for filename in sorted(os.listdir("notes")):
+        note_text = read_note("notes/" + filename)
+        print("\n" + filename)
+        print(ai_grade(note_text))
 
