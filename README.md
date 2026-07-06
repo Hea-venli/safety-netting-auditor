@@ -62,7 +62,13 @@ and patient-safety reasons. **No real patient data, ever.**
 
 ## Example: catching a dangerous note
 
+Sent to the live endpoint: a synthetic discharge note for a new Graves' disease
+patient started on carbimazole — with the safety-netting section deliberately
+removed.
 
+Carbimazole can cause agranulocytosis — a rare but life-threatening drop in
+white blood cells. A discharge note that fails to warn the patient about it is
+exactly the kind of miss this tool exists to catch.
 
 ## AI suggests, human decides
 
@@ -75,6 +81,3 @@ How to put different skills together into one system: API keys and credential
 discipline, Lambda functions and Terraform (as in Project 1), building a Docker
 container, working in Linux — and building in agile-style layers, each one
 tested and shipped before the next.
-
-## Skills demonstrated
-
