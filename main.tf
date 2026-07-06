@@ -69,3 +69,28 @@ resource "aws_lambda_function_url" "auditor_url" {
 output "auditor_url" {
   value = aws_lambda_function_url.auditor_url.function_url
 }
+
+# --- Monitoring: email me if the Lambda errors ---
+resource "aws_sns_topic" "auditor_alerts" {
+  name = "safety-netting-auditor-alerts"
+}
+
+resource "aws_sns_topic_subscription" "email_me" {
+  topic_arn = aws_sns_topic.auditor_alerts.arn
+  protocol  = "email"
+  endpoint  = "heavenegho@hotmail.com"
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+  alarm_name          = "safety-netting-auditor-errors"
+  alarm_description   = "Fires if the auditor Lambda records any errors"
+  namespace           = "AWS/Lambda"
+  metric_name         = "Errors"
+  dimensions          = { FunctionName = aws_lambda_function.auditor.function_name }
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanThreshold"
+  alarm_actions       = [aws_sns_topic.auditor_alerts.arn]
+}
