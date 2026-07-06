@@ -8,3 +8,6 @@ __pycache__/
 # Never commit secrets or env files
 .env
 *.pem
+
+# Docker
+*.tar
