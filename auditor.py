@@ -107,21 +107,6 @@ def ai_grade(text):
     result = json.loads(response["body"].read())
     return result["content"][0]["text"]
 
-if __name__ == "__main__":
-    import os
-
-    print("\n--- RULES GRADES ---")
-    for filename in sorted(os.listdir("notes")):
-        note_text = read_note("notes/" + filename)
-        print(filename, "->", grade_safety_netting(note_text))
-
-    print("\n--- AI GRADES ---")
-    for filename in sorted(os.listdir("notes")):
-        note_text = read_note("notes/" + filename)
-        print("\n" + filename)
-        print(ai_grade(note_text))
-
-
 def lambda_handler(event, context):
     """AWS Lambda entry point: receive a note via API, return the AI grade."""
     body = json.loads(event.get("body", "{}"))
@@ -138,3 +123,17 @@ def lambda_handler(event, context):
         "statusCode": 200,
         "body": json.dumps({"result": result})
     }
+
+if __name__ == "__main__":
+    import os
+
+    print("\n--- RULES GRADES ---")
+    for filename in sorted(os.listdir("notes")):
+        note_text = read_note("notes/" + filename)
+        print(filename, "->", grade_safety_netting(note_text))
+
+    print("\n--- AI GRADES ---")
+    for filename in sorted(os.listdir("notes")):
+        note_text = read_note("notes/" + filename)
+        print("\n" + filename)
+        print(ai_grade(note_text))
