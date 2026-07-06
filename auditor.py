@@ -121,3 +121,20 @@ if __name__ == "__main__":
         print("\n" + filename)
         print(ai_grade(note_text))
 
+
+def lambda_handler(event, context):
+    """AWS Lambda entry point: receive a note via API, return the AI grade."""
+    body = json.loads(event.get("body", "{}"))
+    note_text = body.get("note", "")
+
+    if not note_text:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": "No note text provided. Send JSON: {\"note\": \"...\"}"})
+        }
+
+    result = ai_grade(note_text)
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"result": result})
+    }
